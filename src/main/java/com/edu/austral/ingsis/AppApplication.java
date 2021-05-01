@@ -1,4 +1,4 @@
-package com.edu.austral.ingsis.app;
+package com.edu.austral.ingsis;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
