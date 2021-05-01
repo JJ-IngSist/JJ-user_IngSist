@@ -74,7 +74,8 @@ public class UserController {
 
   @GetMapping("/logged")
   public ResponseEntity<UserDTO> getLoggedUser() {
-    final User user = userService.findLogged();
+//    final User user = userService.findLogged();
+    final User user = userService.getById(1L);
     return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
   }
 

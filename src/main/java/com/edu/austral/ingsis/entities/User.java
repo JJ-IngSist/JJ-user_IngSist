@@ -29,6 +29,11 @@ public class User {
 //  @OneToMany(fetch = FetchType.LAZY)
 //  private List<Long> postIds;
 
+
+  public Long getId() {
+    return id;
+  }
+
   public String getName() {
     return name;
   }
