@@ -1,7 +1,6 @@
 package com.edu.austral.ingsis.controllers;
 
 import com.edu.austral.ingsis.dtos.CreateUserDTO;
-import com.edu.austral.ingsis.dtos.SignInUserDTO;
 import com.edu.austral.ingsis.dtos.UpdateUserDTO;
 import com.edu.austral.ingsis.dtos.UserDTO;
 import com.edu.austral.ingsis.entities.User;
@@ -10,19 +9,13 @@ import com.edu.austral.ingsis.utils.AlreadyExistsException;
 import com.edu.austral.ingsis.utils.NotFoundException;
 import com.edu.austral.ingsis.utils.ObjectMapper;
 import com.edu.austral.ingsis.utils.ObjectMapperImpl;
-import org.modelmapper.spi.ErrorMessage;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 
 @RestController
 public class UserController {
@@ -60,26 +53,26 @@ public class UserController {
 //    }
 //  }
 
+  // No anda porque se borra la fucking password por alguna maldita razon
   @PostMapping("/register")
   public ResponseEntity<UserDTO> registerUser(@RequestBody @Valid CreateUserDTO createUserDTO) {
     final User user = userService.register(objectMapper.map(createUserDTO, User.class));
     return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
   }
 
-  @GetMapping("/profile/{id}")
+  @GetMapping("/user/{id}")
   public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
     final User user = userService.getById(id);
     return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
   }
 
-  @GetMapping("/logged")
+  @GetMapping("/user/logged")
   public ResponseEntity<UserDTO> getLoggedUser() {
-//    final User user = userService.findLogged();
-    final User user = userService.getById(1L);
+    final User user = userService.findLogged();
     return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
   }
 
-  @PutMapping("/{id}")
+  @PutMapping("/user/{id}")
   public ResponseEntity<UserDTO> updateUser(@PathVariable Long id,
                                             @RequestBody @Valid UpdateUserDTO updateUserDTO) {
     try {
@@ -92,8 +85,11 @@ public class UserController {
     }
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<UserDTO> updateUser(@PathVariable Long id) {
+  @DeleteMapping("/user/{id}")
+  public ResponseEntity<UserDTO> deleteUser(@PathVariable Long id) {
+    User user = userService.getById(id);
+    user.setFollowed(new ArrayList<>());
+    userService.register(user);
     userService.delete(id);
     return ResponseEntity.noContent().build();
   }

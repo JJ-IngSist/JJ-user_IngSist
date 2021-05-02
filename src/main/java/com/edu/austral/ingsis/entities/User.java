@@ -1,6 +1,8 @@
 package com.edu.austral.ingsis.entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -26,12 +28,20 @@ public class User {
   @Column(name = "password", nullable = false)
   private String password;
 
-//  @OneToMany(fetch = FetchType.LAZY)
-//  private List<Long> postIds;
+  @ManyToMany
+  private List<User> followed = new ArrayList<>();
 
+  @ElementCollection
+  @CollectionTable(name = "liked_posts", joinColumns = @JoinColumn(name = "id"))
+  @Column(name = "liked")
+  private List<Long> likedPostIds = new ArrayList<>();
 
   public Long getId() {
     return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getName() {
@@ -72,5 +82,21 @@ public class User {
 
   public void setPassword(String encode) {
     this.password = password;
+  }
+
+  public List<User> getFollowed() {
+    return followed;
+  }
+
+  public void setFollowed(List<User> followed) {
+    this.followed = followed;
+  }
+
+  public List<Long> getLikedPostIds() {
+    return likedPostIds;
+  }
+
+  public void setLikedPostIds(List<Long> likedPostIds) {
+    this.likedPostIds = likedPostIds;
   }
 }

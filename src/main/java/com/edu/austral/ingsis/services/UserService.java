@@ -4,9 +4,10 @@ import com.edu.austral.ingsis.entities.User;
 import com.edu.austral.ingsis.repositories.UserRepository;
 import com.edu.austral.ingsis.utils.AlreadyExistsException;
 import com.edu.austral.ingsis.utils.NotFoundException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -33,9 +34,61 @@ public class UserService {
   }
 
   public User findLogged() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    String email = ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
-    return userRepository.findByEmail(email).orElseThrow(NotFoundException::new);
+//    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//    String email = ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
+//    return userRepository.findByEmail(email).orElseThrow(NotFoundException::new);
+    return getById(1L);
+  }
+
+  public User follow(Long id) {
+    User logged = findLogged();
+    User followed = getById(id);
+    if (logged.getId().equals(followed.getId())) throw new RuntimeException();
+    if (contains(logged.getFollowed(), followed)) throw new AlreadyExistsException();
+    logged.getFollowed().add(followed);
+    return userRepository.save(logged);
+  }
+
+  public User unfollow(Long id) {
+    User logged = findLogged();
+    User unfollowed = getById(id);
+    if (logged.getId().equals(unfollowed.getId())) throw new RuntimeException();
+    if (!contains(logged.getFollowed(), unfollowed)) throw new NotFoundException();
+    logged.setFollowed(logged.getFollowed().stream().filter(f -> !f.getId().equals(unfollowed.getId())).collect(Collectors.toList()));
+    return userRepository.save(logged);
+  }
+
+  public User likePost(Long id) {
+    User user = findLogged();
+    if(user.getLikedPostIds().contains(id)) throw new AlreadyExistsException();
+    user.getLikedPostIds().add(id);
+    return userRepository.save(user);
+  }
+
+  public User dislikePost(Long id) {
+    User user = findLogged();
+    if(!user.getLikedPostIds().contains(id)) throw new NotFoundException();
+    user.setLikedPostIds(user.getLikedPostIds().stream().filter(p -> !p.equals(id)).collect(Collectors.toList()));
+    return userRepository.save(user);
+  }
+
+  private boolean contains(List<User> followed, User user) {
+    for (User u : followed) {
+      if (u.getId().equals(user.getId())) return true;
+    }
+    return false;
+  }
+
+  public List<User> findFollowed(Long id) {
+    return getById(id).getFollowed();
+  }
+
+  public List<User> findFollowers(Long id) {
+    return userRepository.findFollowers(id);
+  }
+
+  public List<User> getUsersWhoLikedPost(Long id) {
+    return userRepository.getUsersWhoLikedPost(id);
   }
 
   public User update(Long id, User user) {
