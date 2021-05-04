@@ -1,6 +1,7 @@
 package com.edu.austral.ingsis.controllers;
 
 import com.edu.austral.ingsis.dtos.CreateUserDTO;
+import com.edu.austral.ingsis.dtos.SignInUserDTO;
 import com.edu.austral.ingsis.dtos.UpdateUserDTO;
 import com.edu.austral.ingsis.dtos.UserDTO;
 import com.edu.austral.ingsis.entities.User;
@@ -18,42 +19,25 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 
 @RestController
+@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT})
 public class UserController {
 
   private final ObjectMapper objectMapper;
   private final UserService userService;
-//  private final AuthenticationProvider authenticationProvider;
 
   public UserController(UserService userService) {
     this.userService = userService;
     this.objectMapper = new ObjectMapperImpl();
   }
 
-//  @PostMapping("/login")
-//  public ResponseEntity authenticate(@Valid @RequestBody SignInUserDTO signInUserDTO) {
-//
-//    if(!userService.checkUsername(signInUserDTO.getUsername())) return new ResponseEntity<>(new ErrorMessage("¡Las credenciales ingresadas son incorrectas!"),HttpStatus.UNAUTHORIZED);
-//
-//    User user = userService.findByUsername(signInUserDTO.getUsername());
-//
-//    UsernamePasswordAuthenticationToken authenticationToken =
-//            new UsernamePasswordAuthenticationToken(signInUserDTO.getUsername(), signInUserDTO.getPassword());
-//
-//    try {
-//      Authentication authentication = this.authenticationProvider.authenticate(authenticationToken);
-//      SecurityContextHolder.getContext().setAuthentication(authentication);
-//      String jwt = tokenProvider.createToken(authentication);
-//
-//      HttpHeaders httpHeaders = new HttpHeaders();
-//      httpHeaders.add(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
-//      return new ResponseEntity<>(new LoginResponse(new JWTToken(jwt), user.isAdmin(), user.getFirstName() + " " + user.getLastName()), httpHeaders, HttpStatus.OK);
-//    }
-//    catch (AuthenticationException e){
-//      return new ResponseEntity<>(new ErrorMessage("¡Las credenciales ingresadas son incorrectas!"),HttpStatus.UNAUTHORIZED);
-//    }
-//  }
+  @PostMapping("/login")
+  public ResponseEntity<UserDTO> authenticate(@Valid @RequestBody SignInUserDTO signInUserDTO) {
+    if(!userService.checkUsername(signInUserDTO.getUsername()))
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user is not registered");
+    User user = userService.findByUsername(signInUserDTO.getUsername());
+    return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
+  }
 
-  // No anda porque se borra la fucking password por alguna maldita razon
   @PostMapping("/register")
   public ResponseEntity<UserDTO> registerUser(@RequestBody @Valid CreateUserDTO createUserDTO) {
     final User user = userService.register(objectMapper.map(createUserDTO, User.class));

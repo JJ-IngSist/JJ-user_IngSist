@@ -80,7 +80,7 @@ public class User {
     this.email = email;
   }
 
-  public void setPassword(String encode) {
+  public void setPassword(String password) {
     this.password = password;
   }
 
