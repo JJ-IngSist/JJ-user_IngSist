@@ -20,4 +20,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
   @Query(value = "select * from users u where u.id in (select lp.id from liked_posts lp where lp.liked = ?1)", nativeQuery = true)
   List<User> getUsersWhoLikedPost(Long id);
+
+  @Query(value = "select * from users u where u.username like %?1%", nativeQuery = true)
+  List<User> findByRegex(String value);
 }

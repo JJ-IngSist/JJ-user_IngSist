@@ -91,6 +91,10 @@ public class UserService {
     return userRepository.getUsersWhoLikedPost(id);
   }
 
+  public List<User> findByRegex(String value) {
+    return userRepository.findByRegex(value);
+  }
+
   public User update(Long id, User user) {
     return userRepository
             .findById(id)

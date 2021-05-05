@@ -56,12 +56,6 @@ public class UserController {
     return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
   }
 
-  @GetMapping("/user/search/{username}")
-  public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username) {
-    final User user = userService.findByUsername(username);
-    return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
-  }
-
   @PutMapping("/user/{id}")
   public ResponseEntity<UserDTO> updateUser(@PathVariable Long id,
                                             @RequestBody @Valid UpdateUserDTO updateUserDTO) {
