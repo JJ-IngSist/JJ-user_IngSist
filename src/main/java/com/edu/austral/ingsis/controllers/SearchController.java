@@ -8,9 +8,7 @@ import com.edu.austral.ingsis.services.UserService;
 import com.edu.austral.ingsis.utils.ObjectMapper;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,6 +18,7 @@ import static com.edu.austral.ingsis.utils.ConnectMicroservices.connectToPostMic
 import static com.edu.austral.ingsis.utils.ConnectMicroservices.getFromJson;
 
 @RestController
+@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT})
 public class SearchController {
 
   private final UserService userService;
