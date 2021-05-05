@@ -91,6 +91,11 @@ public class UserService {
     return userRepository.getUsersWhoLikedPost(id);
   }
 
+  public boolean checkIfLoggedLikedPost(Long id) {
+    User logged = findLogged();
+    return logged.getLikedPostIds().contains(id);
+  }
+
   public List<User> findByRegex(String value) {
     return userRepository.findByRegex(value);
   }

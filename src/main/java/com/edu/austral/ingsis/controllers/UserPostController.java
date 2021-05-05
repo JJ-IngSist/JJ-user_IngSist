@@ -66,4 +66,9 @@ public class UserPostController {
     final List<User> users = userService.getUsersWhoLikedPost(id);
     return ResponseEntity.ok(objectMapper.map(users, UserDTO.class));
   }
+
+  @GetMapping("/logged/{id}/liked")
+  public boolean checkIfLoggedLikedPost(@PathVariable Long id) {
+    return userService.checkIfLoggedLikedPost(id);
+  }
 }
