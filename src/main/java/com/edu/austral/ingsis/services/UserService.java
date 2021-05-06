@@ -83,6 +83,10 @@ public class UserService {
     return getById(id).getFollowed();
   }
 
+  public List<User> findFollowedByLogged() {
+    return findFollowed(findLogged().getId());
+  }
+
   public List<User> findFollowers(Long id) {
     return userRepository.findFollowers(id);
   }

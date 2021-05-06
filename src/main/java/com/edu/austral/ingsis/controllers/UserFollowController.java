@@ -56,6 +56,12 @@ public class UserFollowController {
     return ResponseEntity.ok(objectMapper.map(followed, UserDTO.class));
   }
 
+  @GetMapping("/user/followed")
+  public ResponseEntity<List<UserDTO>> getFollowedByLogged() {
+    final List<User> followed = userService.findFollowedByLogged();
+    return ResponseEntity.ok(objectMapper.map(followed, UserDTO.class));
+  }
+
   @GetMapping("/user/{id}/followers")
   public ResponseEntity<List<UserDTO>> getFollowers(@PathVariable Long id) {
     final List<User> followers = userService.findFollowers(id);
