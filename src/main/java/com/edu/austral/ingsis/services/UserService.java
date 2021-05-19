@@ -109,7 +109,6 @@ public class UserService {
             .findById(id)
             .map(old -> {
               old.setName(user.getName());
-              old.setLastname(user.getLastname());
               if(!old.getEmail().equalsIgnoreCase(user.getEmail())) {
                 old.setEmail(user.getEmail());
                 return save(old);

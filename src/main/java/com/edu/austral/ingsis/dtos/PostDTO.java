@@ -11,7 +11,6 @@ public class PostDTO {
   private Long threadId;
   private int likes;
   private String name;
-  private String lastname;
   private String username;
   private String email;
 
@@ -69,14 +68,6 @@ public class PostDTO {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public String getLastname() {
-    return lastname;
-  }
-
-  public void setLastname(String lastname) {
-    this.lastname = lastname;
   }
 
   public String getUsername() {

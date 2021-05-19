@@ -69,7 +69,6 @@ public class SearchController {
     postDTO.setLikes(Integer.parseInt(getFromJson(json, "likes")));
     postDTO.setUserId(Long.valueOf(getFromJson(json, "user")));
     postDTO.setName(getFromJson(json, "name"));
-    postDTO.setLastname(getFromJson(json, "lastname"));
     postDTO.setUsername(getFromJson(json, "username"));
     postDTO.setEmail(getFromJson(json, "email"));
     return postDTO;

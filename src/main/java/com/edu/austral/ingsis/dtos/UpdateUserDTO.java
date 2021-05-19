@@ -7,7 +7,6 @@ import javax.validation.constraints.Pattern;
 public class UpdateUserDTO {
 
   private String name;
-  private String lastname;
 
   @Pattern(regexp = Patterns.PATTERN_EMAIL)
   private String email;
@@ -21,14 +20,6 @@ public class UpdateUserDTO {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public String getLastname() {
-    return lastname;
-  }
-
-  public void setLastname(String lastname) {
-    this.lastname = lastname;
   }
 
   public String getEmail() {

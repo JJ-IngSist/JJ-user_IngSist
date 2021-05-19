@@ -15,6 +15,10 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
   Optional<User> findByEmail(String email);
 
+  boolean existsByEmail(String email);
+
+  boolean existsByUsername(String username);
+
   @Query(value = "select * from users u where u.id in (select uf.user_id from users_followed uf where uf.followed_id = ?1)", nativeQuery = true)
   List<User> findFollowers(Long id);
 

@@ -1,20 +1,23 @@
 package com.edu.austral.ingsis.dtos;
 
 import com.edu.austral.ingsis.utils.Patterns;
+
+import javax.annotation.Nullable;
 import javax.validation.constraints.Pattern;
 
 public class CreateUserDTO {
 
   private String name;
-  private String lastname;
 
   @Pattern(regexp = Patterns.PATTERN_EMAIL)
   private String email;
 
   @Pattern(regexp = Patterns.PATTERN_USERNAME)
+  @Nullable
   private String username;
 
   @Pattern(regexp = Patterns.PATTERN_PASSWORD)
+  @Nullable
   private String password;
 
   public String getName() {
@@ -23,14 +26,6 @@ public class CreateUserDTO {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public String getLastname() {
-    return lastname;
-  }
-
-  public void setLastname(String lastname) {
-    this.lastname = lastname;
   }
 
   public String getEmail() {
@@ -51,9 +46,5 @@ public class CreateUserDTO {
 
   public String getPassword() {
     return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
   }
 }

@@ -1,17 +1,19 @@
 package com.edu.austral.ingsis.controllers;
 
+import com.edu.austral.ingsis.auth.CurrentUser;
+import com.edu.austral.ingsis.auth.UserPrincipal;
 import com.edu.austral.ingsis.dtos.CreateUserDTO;
 import com.edu.austral.ingsis.dtos.SignInUserDTO;
 import com.edu.austral.ingsis.dtos.UpdateUserDTO;
 import com.edu.austral.ingsis.dtos.UserDTO;
 import com.edu.austral.ingsis.entities.User;
+import com.edu.austral.ingsis.repositories.UserRepository;
 import com.edu.austral.ingsis.services.UserService;
-import com.edu.austral.ingsis.utils.AlreadyExistsException;
-import com.edu.austral.ingsis.utils.NotFoundException;
-import com.edu.austral.ingsis.utils.ObjectMapper;
-import com.edu.austral.ingsis.utils.ObjectMapperImpl;
+import com.edu.austral.ingsis.utils.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,6 +27,9 @@ public class UserController {
   private final ObjectMapper objectMapper;
   private final UserService userService;
 
+  @Autowired
+  private UserRepository userRepository;
+
   public UserController(UserService userService) {
     this.userService = userService;
     this.objectMapper = new ObjectMapperImpl();
@@ -36,6 +41,13 @@ public class UserController {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user is not registered");
     User user = userService.findByUsername(signInUserDTO.getUsername());
     return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
+  }
+
+  @GetMapping("/user/me")
+  @PreAuthorize("hasRole('USER')")
+  public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
+    return userRepository.findById(userPrincipal.getId())
+            .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
   }
 
   @PostMapping("/register")
