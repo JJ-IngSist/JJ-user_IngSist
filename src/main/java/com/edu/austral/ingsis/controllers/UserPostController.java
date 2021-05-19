@@ -3,7 +3,7 @@ package com.edu.austral.ingsis.controllers;
 import com.edu.austral.ingsis.dtos.UserDTO;
 import com.edu.austral.ingsis.entities.User;
 import com.edu.austral.ingsis.services.UserService;
-import com.edu.austral.ingsis.utils.AlreadyExistsException;
+import com.edu.austral.ingsis.utils.AlreadyExistsEmailException;
 import com.edu.austral.ingsis.utils.ObjectMapper;
 import com.edu.austral.ingsis.utils.ObjectMapperImpl;
 import org.springframework.http.HttpMethod;
@@ -40,7 +40,7 @@ public class UserPostController {
               getRequestEntity(),
               String.class);
       return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
-    } catch (AlreadyExistsException e) {
+    } catch (AlreadyExistsEmailException e) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "You've already liked this post");
     }
   }
@@ -54,7 +54,7 @@ public class UserPostController {
               getRequestEntity(),
               String.class);
       return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
-    } catch (AlreadyExistsException e) {
+    } catch (AlreadyExistsEmailException e) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "You didn't like this post");
     }
   }

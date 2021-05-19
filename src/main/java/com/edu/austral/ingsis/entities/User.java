@@ -33,11 +33,6 @@ public class User {
   @Column(name = "liked")
   private List<Long> likedPostIds = new ArrayList<>();
 
-  @Enumerated(EnumType.STRING)
-  private AuthProvider provider;
-
-  private String providerId;
-
   public Long getId() {
     return id;
   }
@@ -92,21 +87,5 @@ public class User {
 
   public void setLikedPostIds(List<Long> likedPostIds) {
     this.likedPostIds = likedPostIds;
-  }
-
-  public AuthProvider getProvider() {
-    return provider;
-  }
-
-  public void setProvider(AuthProvider provider) {
-    this.provider = provider;
-  }
-
-  public String getProviderId() {
-    return providerId;
-  }
-
-  public void setProviderId(String providerId) {
-    this.providerId = providerId;
   }
 }

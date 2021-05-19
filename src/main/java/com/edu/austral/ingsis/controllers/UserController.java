@@ -1,7 +1,5 @@
 package com.edu.austral.ingsis.controllers;
 
-import com.edu.austral.ingsis.auth.CurrentUser;
-import com.edu.austral.ingsis.auth.UserPrincipal;
 import com.edu.austral.ingsis.dtos.CreateUserDTO;
 import com.edu.austral.ingsis.dtos.SignInUserDTO;
 import com.edu.austral.ingsis.dtos.UpdateUserDTO;
@@ -13,7 +11,6 @@ import com.edu.austral.ingsis.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -43,13 +40,6 @@ public class UserController {
     return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
   }
 
-  @GetMapping("/user/me")
-  @PreAuthorize("hasRole('USER')")
-  public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
-    return userRepository.findById(userPrincipal.getId())
-            .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
-  }
-
   @PostMapping("/register")
   public ResponseEntity<UserDTO> registerUser(@RequestBody @Valid CreateUserDTO createUserDTO) {
     final User user = userService.register(objectMapper.map(createUserDTO, User.class));
@@ -74,7 +64,7 @@ public class UserController {
     try {
       final User user = userService.update(id, objectMapper.map(updateUserDTO, User.class));
       return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
-    } catch (AlreadyExistsException e) {
+    } catch (AlreadyExistsEmailException e) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "This email is already in use");
     } catch (NotFoundException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user is not registered");

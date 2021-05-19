@@ -3,7 +3,7 @@ package com.edu.austral.ingsis.controllers;
 import com.edu.austral.ingsis.dtos.UserDTO;
 import com.edu.austral.ingsis.entities.User;
 import com.edu.austral.ingsis.services.UserService;
-import com.edu.austral.ingsis.utils.AlreadyExistsException;
+import com.edu.austral.ingsis.utils.AlreadyExistsEmailException;
 import com.edu.austral.ingsis.utils.NotFoundException;
 import com.edu.austral.ingsis.utils.ObjectMapper;
 import com.edu.austral.ingsis.utils.ObjectMapperImpl;
@@ -31,7 +31,7 @@ public class UserFollowController {
     try {
       final User user = userService.follow(id);
       return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
-    } catch (AlreadyExistsException e) {
+    } catch (AlreadyExistsEmailException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You already follow this user");
     } catch (RuntimeException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can't follow yourself");
