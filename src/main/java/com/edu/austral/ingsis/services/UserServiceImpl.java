@@ -5,11 +5,8 @@ import com.edu.austral.ingsis.repositories.UserRepository;
 import com.edu.austral.ingsis.utils.AlreadyExistsEmailException;
 import com.edu.austral.ingsis.utils.AlreadyExistsUsernameException;
 import com.edu.austral.ingsis.utils.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,17 +17,11 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
-  @Autowired
-  private PasswordEncoder passwordEncoder;
-
-  public UserServiceImpl(UserRepository userRepository) {
+  public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
-  }
-
-  @Bean
-  public PasswordEncoder encoder() {
-    return new BCryptPasswordEncoder();
+    this.passwordEncoder = passwordEncoder;
   }
 
   @Override
@@ -59,8 +50,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public User findLogged() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    String email = ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
-    return userRepository.findByEmail(email).orElseThrow(NotFoundException::new);
+    return userRepository.findByEmail(authentication.getName()).orElseThrow(NotFoundException::new);
   }
 
   @Override

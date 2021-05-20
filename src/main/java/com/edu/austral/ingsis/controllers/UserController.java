@@ -5,10 +5,8 @@ import com.edu.austral.ingsis.dtos.SignInUserDTO;
 import com.edu.austral.ingsis.dtos.UpdateUserDTO;
 import com.edu.austral.ingsis.dtos.UserDTO;
 import com.edu.austral.ingsis.entities.User;
-import com.edu.austral.ingsis.repositories.UserRepository;
 import com.edu.austral.ingsis.services.UserService;
 import com.edu.austral.ingsis.utils.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +21,6 @@ public class UserController {
 
   private final ObjectMapper objectMapper;
   private final UserService userService;
-
-  @Autowired
-  private UserRepository userRepository;
 
   public UserController(UserService userService) {
     this.userService = userService;

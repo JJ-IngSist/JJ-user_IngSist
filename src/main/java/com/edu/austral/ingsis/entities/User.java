@@ -2,7 +2,9 @@ package com.edu.austral.ingsis.entities;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -32,6 +34,12 @@ public class User {
   @CollectionTable(name = "liked_posts", joinColumns = @JoinColumn(name = "id"))
   @Column(name = "liked")
   private List<Long> likedPostIds = new ArrayList<>();
+
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "user_role",
+          joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+          inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+  private Set<Role> roles = new HashSet<>();
 
   public Long getId() {
     return id;
@@ -87,5 +95,13 @@ public class User {
 
   public void setLikedPostIds(List<Long> likedPostIds) {
     this.likedPostIds = likedPostIds;
+  }
+
+  public Set<Role> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(Set<Role> roles) {
+    this.roles = roles;
   }
 }
