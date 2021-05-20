@@ -1,4 +1,4 @@
-package com.edu.austral.ingsis.services;
+package com.edu.austral.ingsis.services.user;
 
 import com.edu.austral.ingsis.entities.User;
 import com.edu.austral.ingsis.repositories.UserRepository;

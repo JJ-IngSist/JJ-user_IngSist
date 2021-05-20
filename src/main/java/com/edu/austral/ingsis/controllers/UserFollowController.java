@@ -2,7 +2,7 @@ package com.edu.austral.ingsis.controllers;
 
 import com.edu.austral.ingsis.dtos.UserDTO;
 import com.edu.austral.ingsis.entities.User;
-import com.edu.austral.ingsis.services.UserService;
+import com.edu.austral.ingsis.services.user.UserService;
 import com.edu.austral.ingsis.utils.AlreadyExistsEmailException;
 import com.edu.austral.ingsis.utils.NotFoundException;
 import com.edu.austral.ingsis.utils.ObjectMapper;
@@ -15,7 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT})
 public class UserFollowController {
 
   private final ObjectMapper objectMapper;

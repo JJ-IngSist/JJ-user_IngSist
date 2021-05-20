@@ -2,7 +2,7 @@ package com.edu.austral.ingsis.controllers;
 
 import com.edu.austral.ingsis.dtos.UserDTO;
 import com.edu.austral.ingsis.entities.User;
-import com.edu.austral.ingsis.services.UserService;
+import com.edu.austral.ingsis.services.user.UserService;
 import com.edu.austral.ingsis.utils.AlreadyExistsEmailException;
 import com.edu.austral.ingsis.utils.ObjectMapper;
 import com.edu.austral.ingsis.utils.ObjectMapperImpl;
@@ -18,7 +18,6 @@ import java.util.List;
 import static com.edu.austral.ingsis.utils.ConnectMicroservices.getRequestEntity;
 
 @RestController
-@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT})
 public class UserPostController {
 
   private final ObjectMapper objectMapper;

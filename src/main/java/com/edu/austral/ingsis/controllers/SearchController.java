@@ -4,7 +4,7 @@ import com.edu.austral.ingsis.dtos.FilterUserPostDTO;
 import com.edu.austral.ingsis.dtos.PostDTO;
 import com.edu.austral.ingsis.dtos.UserDTO;
 import com.edu.austral.ingsis.entities.User;
-import com.edu.austral.ingsis.services.UserService;
+import com.edu.austral.ingsis.services.user.UserService;
 import com.edu.austral.ingsis.utils.ObjectMapper;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,6 @@ import static com.edu.austral.ingsis.utils.ConnectMicroservices.connectToPostMic
 import static com.edu.austral.ingsis.utils.ConnectMicroservices.getFromJson;
 
 @RestController
-@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT})
 public class SearchController {
 
   private final UserService userService;
