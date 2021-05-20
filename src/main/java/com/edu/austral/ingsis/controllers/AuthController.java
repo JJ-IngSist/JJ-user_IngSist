@@ -64,7 +64,7 @@ public class AuthController {
 
   @PostMapping("/register")
   public ResponseEntity<UserDTO> registerUser(@RequestBody @Valid CreateUserDTO createUserDTO) {
-    final User user = userService.register(objectMapper.map(createUserDTO, User.class));
+    final User user = userService.save(objectMapper.map(createUserDTO, User.class));
     return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
   }
 
