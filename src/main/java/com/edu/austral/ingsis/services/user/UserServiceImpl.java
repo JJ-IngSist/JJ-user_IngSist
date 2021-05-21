@@ -160,14 +160,19 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User updatePassword(String oldPassword, String password, User user) {
-    if (checkValidOldPassword(oldPassword, user))
+    if (checkValidPassword(oldPassword, user))
       user.setPassword(passwordEncoder.encode(password));
     else
       throw new InvalidOldPasswordException();
     return userRepository.save(user);
   }
 
-  private boolean checkValidOldPassword(String old, User user) {
+  @Override
+  public boolean checkPassword(String password, User user) {
+    return checkValidPassword(password, user);
+  }
+
+  private boolean checkValidPassword(String old, User user) {
     return passwordEncoder.matches(old, user.getPassword());
   }
 }

@@ -43,4 +43,6 @@ public interface UserService {
   void delete(Long id);
 
   User updatePassword(String oldPassword, String password, User user);
+
+  boolean checkPassword(String password, User user);
 }

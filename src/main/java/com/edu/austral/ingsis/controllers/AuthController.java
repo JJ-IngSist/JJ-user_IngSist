@@ -49,6 +49,9 @@ public class AuthController {
     if(!userService.checkUsername(signInUserDTO.getUsername()))
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user is not registered");
     User user = userService.findByUsername(signInUserDTO.getUsername());
+    if(!userService.checkPassword(signInUserDTO.getPassword(), user)) {
+      throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Bad credentials");
+    }
     UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
     try {
       Authentication authentication = this.manager.authenticate(token);
