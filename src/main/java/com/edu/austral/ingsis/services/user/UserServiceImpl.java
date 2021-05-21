@@ -1,10 +1,11 @@
 package com.edu.austral.ingsis.services.user;
 
 import com.edu.austral.ingsis.entities.User;
+import com.edu.austral.ingsis.exception.InvalidOldPasswordException;
 import com.edu.austral.ingsis.repositories.UserRepository;
-import com.edu.austral.ingsis.utils.AlreadyExistsEmailException;
-import com.edu.austral.ingsis.utils.AlreadyExistsUsernameException;
-import com.edu.austral.ingsis.utils.NotFoundException;
+import com.edu.austral.ingsis.exception.AlreadyExistsEmailException;
+import com.edu.austral.ingsis.exception.AlreadyExistsUsernameException;
+import com.edu.austral.ingsis.exception.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -155,5 +156,18 @@ public class UserServiceImpl implements UserService {
   @Override
   public void delete(Long id) {
     userRepository.delete(getById(id));
+  }
+
+  @Override
+  public User updatePassword(String oldPassword, String password, User user) {
+    if (checkValidOldPassword(oldPassword, user))
+      user.setPassword(passwordEncoder.encode(password));
+    else
+      throw new InvalidOldPasswordException();
+    return userRepository.save(user);
+  }
+
+  private boolean checkValidOldPassword(String old, User user) {
+    return passwordEncoder.matches(old, user.getPassword());
   }
 }

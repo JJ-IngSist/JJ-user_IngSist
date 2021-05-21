@@ -1,4 +1,4 @@
-package com.edu.austral.ingsis.utils;
+package com.edu.austral.ingsis.exception;
 
 public class NotFoundException extends RuntimeException {
 

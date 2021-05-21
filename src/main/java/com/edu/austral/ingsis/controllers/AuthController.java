@@ -9,7 +9,7 @@ import com.edu.austral.ingsis.security.JWTConfigurer;
 import com.edu.austral.ingsis.security.JWTToken;
 import com.edu.austral.ingsis.security.TokenProvider;
 import com.edu.austral.ingsis.services.user.UserService;
-import com.edu.austral.ingsis.utils.NotFoundException;
+import com.edu.austral.ingsis.exception.NotFoundException;
 import com.edu.austral.ingsis.utils.ObjectMapper;
 import com.edu.austral.ingsis.utils.ObjectMapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
