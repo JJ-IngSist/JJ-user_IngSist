@@ -2,19 +2,13 @@ package com.edu.austral.ingsis.controllers;
 
 import com.edu.austral.ingsis.dtos.*;
 import com.edu.austral.ingsis.entities.User;
-import com.edu.austral.ingsis.security.JWTConfigurer;
-import com.edu.austral.ingsis.security.JWTToken;
-import com.edu.austral.ingsis.security.TokenProvider;
+import com.edu.austral.ingsis.exception.AlreadyExistsEmailException;
+import com.edu.austral.ingsis.exception.InvalidOldPasswordException;
+import com.edu.austral.ingsis.exception.NotFoundException;
 import com.edu.austral.ingsis.services.user.UserService;
 import com.edu.austral.ingsis.utils.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -37,6 +31,17 @@ public class UserController {
   public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
     final User user = userService.getById(id);
     return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
+  }
+
+  @PostMapping("/changePassword")
+  public ResponseEntity<UserDTO> changeUserPassword(@Valid @RequestBody ChangeUserPasswordDTO changeUserPasswordDTO) {
+    User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+    try {
+      user = userService.updatePassword(changeUserPasswordDTO.getOldPassword(), changeUserPasswordDTO.getPassword(), user);
+      return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
+    } catch (InvalidOldPasswordException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The old password is wrong");
+    }
   }
 
   @PutMapping("/user/{id}")

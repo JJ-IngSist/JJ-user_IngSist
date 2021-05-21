@@ -1,10 +1,11 @@
 package com.edu.austral.ingsis.services.user;
 
 import com.edu.austral.ingsis.entities.User;
+import com.edu.austral.ingsis.exception.InvalidOldPasswordException;
 import com.edu.austral.ingsis.repositories.UserRepository;
-import com.edu.austral.ingsis.utils.AlreadyExistsEmailException;
-import com.edu.austral.ingsis.utils.AlreadyExistsUsernameException;
-import com.edu.austral.ingsis.utils.NotFoundException;
+import com.edu.austral.ingsis.exception.AlreadyExistsEmailException;
+import com.edu.austral.ingsis.exception.AlreadyExistsUsernameException;
+import com.edu.austral.ingsis.exception.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,13 +34,20 @@ public class UserServiceImpl implements UserService {
   @Override
   public User save(User user) {
     user.setPassword(passwordEncoder.encode(user.getPassword()));
-    userRepository
-            .findByEmail(user.getEmail())
-            .ifPresent(found -> { throw new AlreadyExistsEmailException(); });
-    userRepository
-            .findByUsername(user.getUsername())
-            .ifPresent(found -> { throw new AlreadyExistsUsernameException(); });
-    return userRepository.save(user);
+    if (!existsUsername(user) && !existsEmail(user)) {
+      return userRepository.save(user);
+    }
+    throw new AlreadyExistsEmailException();
+  }
+
+  private boolean existsUsername(User user) {
+    return userRepository
+            .findByUsername(user.getUsername()).isPresent();
+  }
+
+  private boolean existsEmail(User user) {
+    return userRepository
+            .findByEmail(user.getEmail()).isPresent();
   }
 
   @Override
@@ -50,7 +58,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public User findLogged() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    return userRepository.findByEmail(authentication.getName()).orElseThrow(NotFoundException::new);
+    return userRepository.findByUsername(authentication.getName()).orElseThrow(NotFoundException::new);
   }
 
   @Override
@@ -133,11 +141,16 @@ public class UserServiceImpl implements UserService {
             .findById(id)
             .map(old -> {
               old.setName(user.getName());
-              if(!old.getEmail().equalsIgnoreCase(user.getEmail()) || !old.getUsername().equalsIgnoreCase(user.getUsername())) {
-                old.setEmail(user.getEmail());
-                old.setUsername(user.getUsername());
-                return save(old);
-              } else return userRepository.save(old);
+              old.setDescription(user.getDescription());
+              if(!old.getEmail().equalsIgnoreCase(user.getEmail())) {
+                if(!existsEmail(user)) old.setEmail(user.getEmail());
+                else throw new AlreadyExistsEmailException();
+              }
+              if(!old.getUsername().equalsIgnoreCase(user.getUsername())) {
+                if(!existsUsername(user)) old.setUsername(user.getUsername());
+                else throw new AlreadyExistsUsernameException();
+              }
+              return userRepository.save(old);
             })
             .orElseThrow(NotFoundException::new);
   }
@@ -155,5 +168,23 @@ public class UserServiceImpl implements UserService {
   @Override
   public void delete(Long id) {
     userRepository.delete(getById(id));
+  }
+
+  @Override
+  public User updatePassword(String oldPassword, String password, User user) {
+    if (checkValidPassword(oldPassword, user))
+      user.setPassword(passwordEncoder.encode(password));
+    else
+      throw new InvalidOldPasswordException();
+    return userRepository.save(user);
+  }
+
+  @Override
+  public boolean checkPassword(String password, User user) {
+    return checkValidPassword(password, user);
+  }
+
+  private boolean checkValidPassword(String old, User user) {
+    return passwordEncoder.matches(old, user.getPassword());
   }
 }

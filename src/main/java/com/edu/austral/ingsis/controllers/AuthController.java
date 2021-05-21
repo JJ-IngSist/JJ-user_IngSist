@@ -9,7 +9,7 @@ import com.edu.austral.ingsis.security.JWTConfigurer;
 import com.edu.austral.ingsis.security.JWTToken;
 import com.edu.austral.ingsis.security.TokenProvider;
 import com.edu.austral.ingsis.services.user.UserService;
-import com.edu.austral.ingsis.utils.NotFoundException;
+import com.edu.austral.ingsis.exception.NotFoundException;
 import com.edu.austral.ingsis.utils.ObjectMapper;
 import com.edu.austral.ingsis.utils.ObjectMapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +49,9 @@ public class AuthController {
     if(!userService.checkUsername(signInUserDTO.getUsername()))
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user is not registered");
     User user = userService.findByUsername(signInUserDTO.getUsername());
+    if(!userService.checkPassword(signInUserDTO.getPassword(), user)) {
+      throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Bad credentials");
+    }
     UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
     try {
       Authentication authentication = this.manager.authenticate(token);

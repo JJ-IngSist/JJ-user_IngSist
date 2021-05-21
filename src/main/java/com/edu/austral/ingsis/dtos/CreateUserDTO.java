@@ -16,7 +16,6 @@ public class CreateUserDTO {
   @Nullable
   private String username;
 
-//  @Pattern(regexp = Patterns.PATTERN_PASSWORD)
   @Nullable
   private String password;
 

@@ -3,7 +3,7 @@ package com.edu.austral.ingsis.controllers;
 import com.edu.austral.ingsis.dtos.UserDTO;
 import com.edu.austral.ingsis.entities.User;
 import com.edu.austral.ingsis.services.user.UserService;
-import com.edu.austral.ingsis.utils.AlreadyExistsEmailException;
+import com.edu.austral.ingsis.exception.AlreadyExistsEmailException;
 import com.edu.austral.ingsis.utils.ObjectMapper;
 import com.edu.austral.ingsis.utils.ObjectMapperImpl;
 import org.springframework.http.HttpMethod;

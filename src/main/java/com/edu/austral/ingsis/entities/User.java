@@ -27,6 +27,9 @@ public class User {
   @Column(name = "password", nullable = false)
   private String password;
 
+  @Column(name = "description", length = 200)
+  private String description;
+
   @ManyToMany
   private List<User> followed = new ArrayList<>();
 
@@ -103,5 +106,13 @@ public class User {
 
   public void setRoles(Set<Role> roles) {
     this.roles = roles;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 }
