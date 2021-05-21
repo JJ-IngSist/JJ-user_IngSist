@@ -3,9 +3,6 @@ version: "3"
 # Run 'docker compose up' to start all containers
 
 # Default Network
-networks:
-  app-network:
-    driver: bridge
 
 volumes:
   userdata:
@@ -19,8 +16,6 @@ services:
       - .env.production
     ports:
       - 5432:5432
-    networks:
-      - app-network
     volumes:
       - userdata:/var/lib/postgresql/data
 
@@ -31,8 +26,9 @@ services:
       context: .
     ports:
       - 8080:8080
-    networks:
-      - app-network
+    environment:
+      DB_HOST: jj-users
+      DB_PORT: 5432
     env_file:
       - .env.production
     depends_on:
