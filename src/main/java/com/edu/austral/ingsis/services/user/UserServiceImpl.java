@@ -34,13 +34,20 @@ public class UserServiceImpl implements UserService {
   @Override
   public User save(User user) {
     user.setPassword(passwordEncoder.encode(user.getPassword()));
-    userRepository
-            .findByEmail(user.getEmail())
-            .ifPresent(found -> { throw new AlreadyExistsEmailException(); });
-    userRepository
-            .findByUsername(user.getUsername())
-            .ifPresent(found -> { throw new AlreadyExistsUsernameException(); });
-    return userRepository.save(user);
+    if (!existsUsername(user) && !existsEmail(user)) {
+      return userRepository.save(user);
+    }
+    throw new AlreadyExistsEmailException();
+  }
+
+  private boolean existsUsername(User user) {
+    return userRepository
+            .findByUsername(user.getUsername()).isPresent();
+  }
+
+  private boolean existsEmail(User user) {
+    return userRepository
+            .findByEmail(user.getEmail()).isPresent();
   }
 
   @Override
@@ -51,7 +58,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public User findLogged() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    return userRepository.findByEmail(authentication.getName()).orElseThrow(NotFoundException::new);
+    return userRepository.findByUsername(authentication.getName()).orElseThrow(NotFoundException::new);
   }
 
   @Override
@@ -134,11 +141,16 @@ public class UserServiceImpl implements UserService {
             .findById(id)
             .map(old -> {
               old.setName(user.getName());
-              if(!old.getEmail().equalsIgnoreCase(user.getEmail()) || !old.getUsername().equalsIgnoreCase(user.getUsername())) {
-                old.setEmail(user.getEmail());
-                old.setUsername(user.getUsername());
-                return save(old);
-              } else return userRepository.save(old);
+              old.setDescription(user.getDescription());
+              if(!old.getEmail().equalsIgnoreCase(user.getEmail())) {
+                if(!existsEmail(user)) old.setEmail(user.getEmail());
+                else throw new AlreadyExistsEmailException();
+              }
+              if(!old.getUsername().equalsIgnoreCase(user.getUsername())) {
+                if(!existsUsername(user)) old.setUsername(user.getUsername());
+                else throw new AlreadyExistsUsernameException();
+              }
+              return userRepository.save(old);
             })
             .orElseThrow(NotFoundException::new);
   }
