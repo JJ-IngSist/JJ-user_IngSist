@@ -184,6 +184,14 @@ public class UserServiceImpl implements UserService {
     return checkValidPassword(password, user);
   }
 
+  @Override
+  public boolean checkIfFollowing(Long id) {
+    for (User u : findFollowedByLogged()) {
+      if (u.getId().equals(id)) return true;
+    }
+    return false;
+  }
+
   private boolean checkValidPassword(String old, User user) {
     return passwordEncoder.matches(old, user.getPassword());
   }

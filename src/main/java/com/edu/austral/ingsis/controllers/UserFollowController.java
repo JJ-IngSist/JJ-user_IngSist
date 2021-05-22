@@ -49,8 +49,23 @@ public class UserFollowController {
     }
   }
 
-  @GetMapping("/user/{id}/followed")
-  public ResponseEntity<List<UserDTO>> getFollowed(@PathVariable Long id) {
+  @GetMapping("/user/{id}/is-following")
+  public ResponseEntity<Boolean> getIsFollowing(@PathVariable Long id) {
+    return ResponseEntity.ok(userService.checkIfFollowing(id));
+  }
+
+  @GetMapping("/user/{id}/amount-followed")
+  public ResponseEntity<Integer> getAmountFollowed(@PathVariable Long id) {
+    return ResponseEntity.ok(userService.findFollowed(id).size());
+  }
+
+  @GetMapping("/user/{id}/amount-following")
+  public ResponseEntity<Integer> getAmountFollowing(@PathVariable Long id) {
+    return ResponseEntity.ok(userService.findFollowers(id).size());
+  }
+
+  @GetMapping("/user/{id}/following")
+  public ResponseEntity<List<UserDTO>> getFollowing(@PathVariable Long id) {
     final List<User> followed = userService.findFollowed(id);
     return ResponseEntity.ok(objectMapper.map(followed, UserDTO.class));
   }
