@@ -45,4 +45,6 @@ public interface UserService {
   User updatePassword(String oldPassword, String password, User user);
 
   boolean checkPassword(String password, User user);
+
+  boolean checkIfFollowing(Long id);
 }

@@ -4,12 +4,22 @@ import com.edu.austral.ingsis.security.JWTToken;
 
 public class LoggedUserDTO {
 
+  private Long id;
   private String username;
   private JWTToken token;
 
-  public LoggedUserDTO(String username, JWTToken token) {
+  public LoggedUserDTO(Long id, String username, JWTToken token) {
+    this.id = id;
     this.username = username;
     this.token = token;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getUsername() {

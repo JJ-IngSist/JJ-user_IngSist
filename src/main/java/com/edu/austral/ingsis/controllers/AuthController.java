@@ -59,7 +59,7 @@ public class AuthController {
       String jwt = tokenProvider.createToken(authentication);
       HttpHeaders httpHeaders = new HttpHeaders();
       httpHeaders.add(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
-      return new ResponseEntity<>(new LoggedUserDTO(user.getUsername(), new JWTToken(jwt)), httpHeaders, HttpStatus.OK);
+      return new ResponseEntity<>(new LoggedUserDTO(user.getId(), user.getUsername(), new JWTToken(jwt)), httpHeaders, HttpStatus.OK);
     } catch (BadCredentialsException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
