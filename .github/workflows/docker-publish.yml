@@ -64,8 +64,8 @@ jobs:
           PROD_IP: ${{ secrets.PROD_IP }}
           PROD_USER: ${{ secrets.PROD_USER }}
       - name: Deploy
-        run: echo $SSH_PRIVATE_KEY > jj-infra-deply && chmod 400 ./jj-infra-deply && ssh $VM_USER@$VM_IP -i ./jj-infra-deply "/scripts/restart.sh"
+        run: echo $SSH_PUBLIC_KEY > jj-infra-deply.pub && chmod 400 ./jj-infra-deply.pub && ssh $VM_USER@$VM_IP -i ./jj-infra-deply.pub "/scripts/restart.sh"
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
           VM_IP: ${{ env.VM_IP }}
           VM_USER: ${{ env.VM_USER }}
