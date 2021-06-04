@@ -5,8 +5,25 @@ on:
     branches: [ prod ]
 
 jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew build
+      
   push_to_registries:
     name: Push Docker image to multiple registries
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -35,6 +52,7 @@ jobs:
         with:
           push: true
           tags: docker.pkg.github.com/${{ github.repository }}/user-image:latest
+          
   update-server:
     name: Update Server docker image
     needs: push_to_registries
