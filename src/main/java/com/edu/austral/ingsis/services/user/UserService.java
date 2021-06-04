@@ -12,6 +12,8 @@ public interface UserService {
 
   User getById(Long id);
 
+  List<User> findAll();
+
   User findLogged();
 
   User follow(Long id);

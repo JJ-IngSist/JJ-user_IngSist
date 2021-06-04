@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -64,5 +65,10 @@ public class UserController {
     userService.register(user);
     userService.delete(id);
     return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/users")
+  public ResponseEntity<List<UserDTO>> getAllUsers() {
+    return ResponseEntity.ok(objectMapper.map(userService.findAll(), UserDTO.class));
   }
 }

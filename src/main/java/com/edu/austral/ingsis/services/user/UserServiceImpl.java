@@ -56,6 +56,11 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public List<User> findAll() {
+    return userRepository.findAll();
+  }
+
+  @Override
   public User findLogged() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     return userRepository.findByUsername(authentication.getName()).orElseThrow(NotFoundException::new);
