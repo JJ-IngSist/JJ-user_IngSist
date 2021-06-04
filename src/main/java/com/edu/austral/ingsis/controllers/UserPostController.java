@@ -68,4 +68,10 @@ public class UserPostController {
   public boolean checkIfLoggedLikedPost(@PathVariable Long id) {
     return userService.checkIfLoggedLikedPost(id);
   }
+
+  @PutMapping("/post/delete/{id}")
+  public ResponseEntity<UserDTO> deletePost(@PathVariable Long id) {
+    userService.deletePost(id);
+    return ResponseEntity.noContent().build();
+  }
 }

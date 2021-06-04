@@ -1,12 +1,13 @@
 package com.edu.austral.ingsis.dtos;
 
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
 
 public class PostDTO {
 
   private Long id;
   private String text;
-  private LocalDate date;
+  private LocalDateTime date;
   private Long userId;
   private Long threadId;
   private int likes;
@@ -30,11 +31,11 @@ public class PostDTO {
     this.text = text;
   }
 
-  public LocalDate getDate() {
+  public LocalDateTime getDate() {
     return date;
   }
 
-  public void setDate(LocalDate date) {
+  public void setDate(LocalDateTime date) {
     this.date = date;
   }
 

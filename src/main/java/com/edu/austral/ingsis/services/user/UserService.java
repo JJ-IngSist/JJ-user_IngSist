@@ -47,4 +47,6 @@ public interface UserService {
   boolean checkPassword(String password, User user);
 
   boolean checkIfFollowing(Long id);
+
+  void deletePost(Long id);
 }

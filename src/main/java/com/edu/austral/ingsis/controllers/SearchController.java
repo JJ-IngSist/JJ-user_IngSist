@@ -10,7 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +64,7 @@ public class SearchController {
     postDTO.setId(Long.valueOf(getFromJson(json, "id")));
     postDTO.setText(getFromJson(json, "text"));
     postDTO.setThreadId(Long.valueOf(getFromJson(json, "threadId")));
-    postDTO.setDate(LocalDate.parse(getFromJson(json, "date")));
+    postDTO.setDate(LocalDateTime.parse(getFromJson(json, "date")));
     postDTO.setLikes(Integer.parseInt(getFromJson(json, "likes")));
     postDTO.setUserId(Long.valueOf(getFromJson(json, "user")));
     postDTO.setName(getFromJson(json, "name"));
