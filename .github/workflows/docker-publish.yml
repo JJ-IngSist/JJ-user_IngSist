@@ -35,3 +35,19 @@ jobs:
         with:
           push: true
           tags: docker.pkg.github.com/${{ github.repository }}/user-image:latest
+  update-server:
+    name: Update Server docker image
+    needs: push_to_registries
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Production Env variables if prod is target
+        run: echo "VM_IP=$PROD_IP" >> $GITHUB_ENV && echo "VM_USER=$PROD_USER" >> $GITHUB_ENV
+        env: 
+          PROD_IP: ${{ secrets.PROD_IP }}
+          PROD_USER: ${{ secrets.PROD_USER }}
+      - name: Deploy
+        run: echo $SSH_PRIVATE_KEY > key.pub && chmod 400 ./key.pub && ssh $VM_USER@$VM_IP -i ./key.pub "/scripts/restart.sh"
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          VM_IP: ${{ env.VM_IP }}
+          VM_USER: ${{ env.VM_USER }}
