@@ -51,3 +51,24 @@ jobs:
         with:
           push: true
           tags: docker.pkg.github.com/${{ github.repository }}/user-staging-image:latest
+          
+  update-server:
+    needs: push_to_registries
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+      - name: Set Production Env variables if prod is target
+        run: echo "VM_IP=$DEV_IP" >> $GITHUB_ENV && echo "VM_USER=$DEV_USER" >> $GITHUB_ENV
+        env: 
+          PROD_IP: ${{ secrets.DEV_IP }}
+          PROD_USER: ${{ secrets.DEV_USER }}
+      - name: Deploy
+        uses: fifsky/ssh-action@master
+        with:
+          command: /scripts/restart.sh
+          host: ${{ env.VM_IP }}
+          user: ${{ env.VM_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
