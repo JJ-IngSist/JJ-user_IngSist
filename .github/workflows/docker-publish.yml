@@ -54,18 +54,22 @@ jobs:
           tags: docker.pkg.github.com/${{ github.repository }}/user-image:latest
           
   update-server:
-    name: Update Server docker image
     needs: push_to_registries
     runs-on: ubuntu-latest
     steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
       - name: Set Production Env variables if prod is target
         run: echo "VM_IP=$PROD_IP" >> $GITHUB_ENV && echo "VM_USER=$PROD_USER" >> $GITHUB_ENV
         env: 
           PROD_IP: ${{ secrets.PROD_IP }}
           PROD_USER: ${{ secrets.PROD_USER }}
       - name: Deploy
-        run: echo $SSH_PUBLIC_KEY > jj-infra-deply.pub && chmod 400 ./jj-infra-deply.pub && ssh $VM_USER@$VM_IP -i ./jj-infra-deply.pub "/scripts/restart.sh"
-        env:
-          SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
-          VM_IP: ${{ env.VM_IP }}
-          VM_USER: ${{ env.VM_USER }}
+        uses: fifsky/ssh-action@master
+        with:
+          command: /scripts/restart.sh
+          host: ${{ env.VM_IP }}
+          user: ${{ env.VM_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
