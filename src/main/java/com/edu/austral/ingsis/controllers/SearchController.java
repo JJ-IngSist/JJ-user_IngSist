@@ -29,10 +29,11 @@ public class SearchController {
   }
 
   @GetMapping("/search/{value}")
-  public ResponseEntity<FilterUserPostDTO> getUserOrPost(@PathVariable String value) {
+  public ResponseEntity<FilterUserPostDTO> getUserOrPost(@PathVariable String value,
+                                                         @RequestHeader (name="Authorization") String token) {
     final List<User> filteredU = userService.findByRegex(value);
     final List<UserDTO> users = objectMapper.map(filteredU, UserDTO.class);
-    String json = connectToPostMicroservice("/search/" + value, HttpMethod.GET);
+    String json = connectToPostMicroservice("/search/" + value, HttpMethod.GET, token);
     final List<PostDTO> posts = parsePosts(json);
     return ResponseEntity.ok(new FilterUserPostDTO(users, posts));
   }

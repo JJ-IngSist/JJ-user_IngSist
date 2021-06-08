@@ -7,12 +7,15 @@ import com.edu.austral.ingsis.exception.AlreadyExistsEmailException;
 import com.edu.austral.ingsis.exception.NotFoundException;
 import com.edu.austral.ingsis.utils.ObjectMapper;
 import com.edu.austral.ingsis.utils.ObjectMapperImpl;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+
+import static com.edu.austral.ingsis.utils.ConnectMicroservices.connectToPostMicroservice;
 
 @RestController
 public class UserFollowController {
@@ -26,9 +29,11 @@ public class UserFollowController {
   }
 
   @PostMapping("/user/{id}/follow")
-  public ResponseEntity<UserDTO> followUser(@PathVariable Long id) {
+  public ResponseEntity<UserDTO> followUser(@PathVariable Long id,
+                                            @RequestHeader (name="Authorization") String token) {
     try {
       final User user = userService.follow(id);
+      connectToPostMicroservice("/conversation/" + id + "/" + user.getId(), HttpMethod.POST, token);
       return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
     } catch (AlreadyExistsEmailException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You already follow this user");
@@ -38,9 +43,11 @@ public class UserFollowController {
   }
 
   @PostMapping("/user/{id}/unfollow")
-  public ResponseEntity<UserDTO> unfollowUser(@PathVariable Long id) {
+  public ResponseEntity<UserDTO> unfollowUser(@PathVariable Long id,
+                                              @RequestHeader (name="Authorization") String token) {
     try {
       final User user = userService.unfollow(id);
+      connectToPostMicroservice("/conversation/" + id + "/" + user.getId(), HttpMethod.DELETE, token);
       return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
     } catch (NotFoundException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You don't follow this user");
