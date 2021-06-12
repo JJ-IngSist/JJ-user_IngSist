@@ -56,6 +56,11 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public List<User> findAll() {
+    return userRepository.findAll();
+  }
+
+  @Override
   public User findLogged() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     return userRepository.findByUsername(authentication.getName()).orElseThrow(NotFoundException::new);
@@ -126,8 +131,12 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public boolean checkIfLoggedLikedPost(Long id) {
-    User logged = findLogged();
-    return logged.getLikedPostIds().contains(id);
+    try {
+      User logged = findLogged();
+      return logged.getLikedPostIds().contains(id);
+    } catch (NotFoundException e) {
+      return false;
+    }
   }
 
   @Override
@@ -190,6 +199,18 @@ public class UserServiceImpl implements UserService {
       if (u.getId().equals(id)) return true;
     }
     return false;
+  }
+
+  @Override
+  public void deletePost(Long id) {
+    for (User user: userRepository.getUsersWhoLikedPost(id)) {
+      user.setLikedPostIds(deletePost(user.getLikedPostIds(), id));
+      userRepository.save(user);
+    }
+  }
+
+  private List<Long> deletePost(List<Long> list, Long id) {
+    return list.stream().filter(l -> !l.equals(id)).collect(Collectors.toList());
   }
 
   private boolean checkValidPassword(String old, User user) {

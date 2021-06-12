@@ -31,12 +31,13 @@ public class UserPostController {
   }
 
   @PostMapping("/user/like/{id}")
-  public ResponseEntity<UserDTO> likePost(@PathVariable Long id) {
+  public ResponseEntity<UserDTO> likePost(@PathVariable Long id,
+                                          @RequestHeader (name="Authorization") String token) {
     try {
       final User user = userService.likePost(id);
       restTemplate.exchange("http://localhost:8081/post/like/" + id,
               HttpMethod.POST,
-              getRequestEntity(),
+              getRequestEntity(token),
               String.class);
       return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
     } catch (AlreadyExistsEmailException e) {
@@ -45,12 +46,13 @@ public class UserPostController {
   }
 
   @PostMapping("/user/dislike/{id}")
-  public ResponseEntity<UserDTO> dislikePost(@PathVariable Long id) {
+  public ResponseEntity<UserDTO> dislikePost(@PathVariable Long id,
+                                             @RequestHeader (name="Authorization") String token) {
     try {
       final User user = userService.dislikePost(id);
       restTemplate.exchange("http://localhost:8081/post/dislike/" + id,
               HttpMethod.POST,
-              getRequestEntity(),
+              getRequestEntity(token),
               String.class);
       return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
     } catch (AlreadyExistsEmailException e) {
@@ -67,5 +69,11 @@ public class UserPostController {
   @GetMapping("/logged/{id}/liked")
   public boolean checkIfLoggedLikedPost(@PathVariable Long id) {
     return userService.checkIfLoggedLikedPost(id);
+  }
+
+  @PutMapping("/post/delete/{id}")
+  public ResponseEntity<UserDTO> deletePost(@PathVariable Long id) {
+    userService.deletePost(id);
+    return ResponseEntity.noContent().build();
   }
 }

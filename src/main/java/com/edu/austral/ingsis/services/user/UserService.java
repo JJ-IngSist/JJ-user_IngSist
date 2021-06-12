@@ -12,6 +12,8 @@ public interface UserService {
 
   User getById(Long id);
 
+  List<User> findAll();
+
   User findLogged();
 
   User follow(Long id);
@@ -47,4 +49,6 @@ public interface UserService {
   boolean checkPassword(String password, User user);
 
   boolean checkIfFollowing(Long id);
+
+  void deletePost(Long id);
 }
