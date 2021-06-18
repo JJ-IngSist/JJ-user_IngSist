@@ -2,7 +2,7 @@ name: Publish Docker image
 
 on:
   push:
-    branches: [ prod ]
+    branches: [ staging ]
 
 jobs:
   build:
@@ -20,10 +20,9 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
-      
+
   push_to_registries:
     name: Push Docker image to multiple registries
-    needs: build
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -46,12 +45,12 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: rocioferreiro/jj-infra-user
+          tags: rocioferreiro/jj-infra-user-staging
       - name: Build container image
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: docker.pkg.github.com/${{ github.repository }}/user-image:latest
+          tags: docker.pkg.github.com/${{ github.repository }}/user-staging-image:latest
           
   update-server:
     needs: push_to_registries
@@ -62,10 +61,10 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
       - name: Set Production Env variables if prod is target
-        run: echo "VM_IP=$PROD_IP" >> $GITHUB_ENV && echo "VM_USER=$PROD_USER" >> $GITHUB_ENV
+        run: echo "VM_IP=$DEV_IP" >> $GITHUB_ENV && echo "VM_USER=$DEV_USER" >> $GITHUB_ENV
         env: 
-          PROD_IP: ${{ secrets.PROD_IP }}
-          PROD_USER: ${{ secrets.PROD_USER }}
+          PROD_IP: ${{ secrets.DEV_IP }}
+          PROD_USER: ${{ secrets.DEV_USER }}
       - name: Deploy
         uses: fifsky/ssh-action@master
         with:

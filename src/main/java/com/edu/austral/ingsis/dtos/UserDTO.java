@@ -47,4 +47,5 @@ public class UserDTO {
   public void setDescription(String description) {
     this.description = description;
   }
+
 }
