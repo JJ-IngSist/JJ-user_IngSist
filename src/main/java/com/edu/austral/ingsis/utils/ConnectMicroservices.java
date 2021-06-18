@@ -32,6 +32,7 @@ public class ConnectMicroservices {
   }
 
   public static String connectToPostMicroservice(String url, HttpMethod method, String token) {
+    System.out.println(postUrl);
     final ResponseEntity<String> responseEntity = restTemplate.exchange(postUrl + url,
             method,
             getRequestEntity(token),
