@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 public class ConnectMicroservices {
 
-  @Value("${post_url}")
+  @Value("${posturl}")
   private static String postUrl;
 
   private final static RestTemplate restTemplate = new RestTemplate();
@@ -32,7 +32,6 @@ public class ConnectMicroservices {
   }
 
   public static String connectToPostMicroservice(String url, HttpMethod method, String token) {
-    System.out.println(postUrl);
     final ResponseEntity<String> responseEntity = restTemplate.exchange(postUrl + url,
             method,
             getRequestEntity(token),
