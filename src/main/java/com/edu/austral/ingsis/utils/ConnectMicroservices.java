@@ -8,8 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 public class ConnectMicroservices {
 
-  @Value("${posturl}")
-  private static String postUrl;
+  private static String postUrl = "http://api-post:8080";
 
   private final static RestTemplate restTemplate = new RestTemplate();
 
@@ -40,7 +39,7 @@ public class ConnectMicroservices {
   }
 
   public static String connectToMessageMicroservice(String url, HttpMethod method, String token) {
-    final ResponseEntity<String> responseEntity = restTemplate.exchange("http://localhost:8082" + url,
+    final ResponseEntity<String> responseEntity = restTemplate.exchange("http://api-messages:8080" + url,
             method,
             getRequestEntity(token),
             String.class);
