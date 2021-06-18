@@ -34,4 +34,12 @@ public class ConnectMicroservices {
             String.class);
     return responseEntity.getBody();
   }
+
+  public static String connectToMessageMicroservice(String url, HttpMethod method, String token) {
+    final ResponseEntity<String> responseEntity = restTemplate.exchange("http://localhost:8082" + url,
+            method,
+            getRequestEntity(token),
+            String.class);
+    return responseEntity.getBody();
+  }
 }
