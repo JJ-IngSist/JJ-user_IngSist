@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-import static com.edu.austral.ingsis.utils.ConnectMicroservices.connectToPostMicroservice;
+import static com.edu.austral.ingsis.utils.ConnectMicroservices.connectToMessageMicroservice;
 
 @RestController
 public class UserFollowController {
@@ -33,7 +33,7 @@ public class UserFollowController {
                                             @RequestHeader (name="Authorization") String token) {
     try {
       final User user = userService.follow(id);
-      connectToPostMicroservice("/conversation/" + id + "/" + user.getId(), HttpMethod.POST, token);
+      connectToMessageMicroservice("/conversation/" + id + "/" + user.getId(), HttpMethod.POST, token);
       return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
     } catch (AlreadyExistsEmailException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You already follow this user");
@@ -47,7 +47,7 @@ public class UserFollowController {
                                               @RequestHeader (name="Authorization") String token) {
     try {
       final User user = userService.unfollow(id);
-      connectToPostMicroservice("/conversation/" + id + "/" + user.getId(), HttpMethod.DELETE, token);
+      connectToMessageMicroservice("/conversation/" + id + "/" + user.getId(), HttpMethod.DELETE, token);
       return ResponseEntity.ok(objectMapper.map(user, UserDTO.class));
     } catch (NotFoundException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You don't follow this user");

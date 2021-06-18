@@ -2,10 +2,14 @@ package com.edu.austral.ingsis.utils;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 public class ConnectMicroservices {
+
+  @Value("${posturl}")
+  private static String postUrl;
 
   private final static RestTemplate restTemplate = new RestTemplate();
 
@@ -28,7 +32,15 @@ public class ConnectMicroservices {
   }
 
   public static String connectToPostMicroservice(String url, HttpMethod method, String token) {
-    final ResponseEntity<String> responseEntity = restTemplate.exchange("http://localhost:8081" + url,
+    final ResponseEntity<String> responseEntity = restTemplate.exchange(postUrl + url,
+            method,
+            getRequestEntity(token),
+            String.class);
+    return responseEntity.getBody();
+  }
+
+  public static String connectToMessageMicroservice(String url, HttpMethod method, String token) {
+    final ResponseEntity<String> responseEntity = restTemplate.exchange("http://localhost:8082" + url,
             method,
             getRequestEntity(token),
             String.class);
