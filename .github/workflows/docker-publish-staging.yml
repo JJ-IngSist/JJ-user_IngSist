@@ -5,21 +5,6 @@ on:
     branches: [ staging ]
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 11
-      uses: actions/setup-java@v2
-      with:
-        java-version: '11'
-        distribution: 'adopt'
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
 
   push_to_registries:
     name: Push Docker image to multiple registries
@@ -63,12 +48,12 @@ jobs:
       - name: Set Production Env variables if prod is target
         run: echo "VM_IP=$DEV_IP" >> $GITHUB_ENV && echo "VM_USER=$DEV_USER" >> $GITHUB_ENV
         env: 
-          PROD_IP: ${{ secrets.DEV_IP }}
-          PROD_USER: ${{ secrets.DEV_USER }}
+          DEV_IP: ${{ secrets.DEV_IP }}
+          DEV_USER: ${{ secrets.DEV_USER }}
       - name: Deploy
         uses: fifsky/ssh-action@master
         with:
-          command: ./scripts/restart-dev.sh
+          command: ./jj-infra/scripts/restart-dev.sh
           host: ${{ env.VM_IP }}
           user: ${{ env.VM_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
