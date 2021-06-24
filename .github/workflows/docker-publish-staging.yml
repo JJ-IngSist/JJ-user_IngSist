@@ -63,12 +63,12 @@ jobs:
       - name: Set Production Env variables if prod is target
         run: echo "VM_IP=$DEV_IP" >> $GITHUB_ENV && echo "VM_USER=$DEV_USER" >> $GITHUB_ENV
         env: 
-          PROD_IP: ${{ secrets.DEV_IP }}
-          PROD_USER: ${{ secrets.DEV_USER }}
+          DEV_IP: ${{ secrets.DEV_IP }}
+          DEV_USER: ${{ secrets.DEV_USER }}
       - name: Deploy
         uses: fifsky/ssh-action@master
         with:
-          command: ./scripts/restart.sh
+          command: ./jj-infra/scripts/restart-dev.sh
           host: ${{ env.VM_IP }}
           user: ${{ env.VM_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
