@@ -39,7 +39,7 @@ public class ConnectMicroservices {
   }
 
   public static String connectToMessageMicroservice(String url, HttpMethod method, String token) {
-    final ResponseEntity<String> responseEntity = restTemplate.exchange("wss://api-messages:8080" + url,
+    final ResponseEntity<String> responseEntity = restTemplate.exchange("http://api-messages:8080" + url,
             method,
             getRequestEntity(token),
             String.class);
