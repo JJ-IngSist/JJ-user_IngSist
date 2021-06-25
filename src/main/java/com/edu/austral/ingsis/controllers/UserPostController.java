@@ -35,7 +35,7 @@ public class UserPostController {
                                           @RequestHeader (name="Authorization") String token) {
     try {
       final User user = userService.likePost(id);
-      restTemplate.exchange("http://localhost:8081/post/like/" + id,
+      restTemplate.exchange("http://api-post:8080/post/like/" + id,
               HttpMethod.POST,
               getRequestEntity(token),
               String.class);
@@ -50,7 +50,7 @@ public class UserPostController {
                                              @RequestHeader (name="Authorization") String token) {
     try {
       final User user = userService.dislikePost(id);
-      restTemplate.exchange("http://localhost:8081/post/dislike/" + id,
+      restTemplate.exchange("http://api-post:8080/post/dislike/" + id,
               HttpMethod.POST,
               getRequestEntity(token),
               String.class);
